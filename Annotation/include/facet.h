@@ -1,6 +1,6 @@
 /****************************************************************************
 *   AnnotationTransfer                                                      *
-*   Authors: Andrea Repetto & Andreas Scalas                                *
+*   Authors: Andreas Scalas & Andrea Repetto                                *
 *   Copyright (C) 2018  IMATI-GE / CNR                                      *
 *   All rights reserved.                                                    *
 *                                                                           *
@@ -17,7 +17,6 @@
 *   You should have received a copy of the GNU General Public License       *
 *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
 ****************************************************************************/
-
 #ifndef FACET_H
 #define FACET_H
 

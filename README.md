@@ -52,7 +52,7 @@ The following instructions need to be followed to prepare your system for instal
 2.1.1 Hardware requisites 
 n/a
 
-2.1.2 3rd party software necessary to install the module (already included)
+2.1.2 3rd party software necessary to install the module
 • ImatiSTL 4.2 or higher: https://sourceforge.net/projects/imatistl/ (GNU GPL v3)
 • nanoflann: https://github.com/jlblancoc/nanoflann.git (BSD)
 
@@ -67,7 +67,7 @@ Credentials are not needed.
 The only requirement for system setup is to have C++11 or higher installed in the system.
 
 3 Deployment Instruction
-To build the source code the user needs C++11 or higher and cmake to be installed in the system. 
+To build the source code the user needs C++11 or higher and cmake to be installed in the system. After the download of ImatiSTL and nanoflann, the user has to unzip the archives in the main folder of the AnnotationTranfer tool.
 Then, the user has to perform the following calls in the system shell:
 
 ~AnnotationTransfer_path/cmake> cmake CMakeLists.txt

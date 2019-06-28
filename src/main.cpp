@@ -63,9 +63,9 @@ int main(int argc, char *argv[]){
             Annotation* a = static_cast<Annotation*>(*it);
             long int duration;
             auto start = std::chrono::high_resolution_clock::now();
-            if(source->V.numels() < target->V.numels() / 5)
+            /*if(source->V.numels() < target->V.numels() / 5)
                 targetAnnotations.push_back(a->parallelTransfer(target, m));
-            else
+            else*/
                 targetAnnotations.push_back(a->transfer(target, m));
             /*double oldArea = a->getArea();
             double newArea = targetAnnotations.back()->getArea();

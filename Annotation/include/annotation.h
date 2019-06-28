@@ -17,6 +17,7 @@
 *   You should have received a copy of the GNU General Public License       *
 *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
 ****************************************************************************/
+
 #ifndef ANNOTATION_H
 #define ANNOTATION_H
 
@@ -71,8 +72,8 @@ class Annotation {
         std::vector<std::vector<IMATI_STL::Vertex*> > outlines;      //The outline of the annotated region
         unsigned char color[3];                 //The color associated to the annotation
         std::string tag;                        //The tag of the annotation
-        double sphere_ray;                      //The radius of the sphere for the neighborhood search
-        const short BBOX_SPHERE_RATIO = 20000;  //Divisive coefficient between the BBox longest diagonal and neighborhood sphere radius
+        double sphereRay;                       //The radius of the sphere for the neighborhood search
+        const short BBOX_SPHERE_RATIO = 1000;   //Divisive coefficient between the BBox longest diagonal and neighborhood sphere radius
         const unsigned short NUM_OF_THREADS = 8;//Number of threads used for the transfer procedure
         const bool ORDER = true;                //Order of the outline: if TRUE then it is counterclockwise, otherwise is clockwise
 

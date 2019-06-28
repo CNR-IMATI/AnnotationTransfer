@@ -1,6 +1,6 @@
 /****************************************************************************
 *   AnnotationTransfer                                                      *
-*   Authors: Andrea Repetto & Andreas Scalas                                *
+*   Authors: Andreas Scalas & Andrea Repetto                                *
 *   Copyright (C) 2018  IMATI-GE / CNR                                      *
 *   All rights reserved.                                                    *
 *                                                                           *

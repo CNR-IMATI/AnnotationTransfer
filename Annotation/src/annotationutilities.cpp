@@ -139,6 +139,7 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
         queue<Vertex*> frontier;
         map<Vertex*, double> distances = {{v1, 0}};
         map<Vertex*, Vertex*> predecessors = {{v1, nullptr}};
+        set<Vertex*> v21RingNeighbors;
         vector<Vertex*> shortestPath;
         Vertex* v;
 
@@ -150,22 +151,31 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
 
         do{
             v = frontier.front();
+
             frontier.pop();
             List* neighbors = v->VV();
             for(Node* n = neighbors->head(); n != nullptr; n = n->next()){
                 Vertex* x = static_cast<Vertex*>(n->data);
+
+                if(x == v2 && v21RingNeighbors.find(v) == v21RingNeighbors.end()){
+                    v21RingNeighbors.insert(v);
+                    cout<<"V21_Ring"<<v21RingNeighbors.size()<<"= ("<<v->x<<","<<v->y<<","<<v->z<<")"<<endl;
+                }
                 map<Vertex*, Vertex*>::iterator pit = predecessors.find(x);
                 double distanceVX;
-                switch(metric){
-                    case SEGMENT_DISTANCE:
-                        distanceVX = distances[v] + x->distanceFromEdge(v1,v2);
-                        break;
-                    case COMBINED_DISTANCE:
-                        distanceVX = distances[v] + (*x-*v).length() + x->distanceFromEdge(v1,v2);
-                        break;
-                    default:
-                        distanceVX = distances[v] + (*x-*v).length();
-                }
+                if(x->info == nullptr){
+                    switch(metric){
+                        case SEGMENT_DISTANCE:
+                            distanceVX = distances[v] + x->distanceFromEdge(v1,v2);
+                            break;
+                        case COMBINED_DISTANCE:
+                            distanceVX = distances[v] + (*x-*v).length() + x->distanceFromEdge(v1,v2);
+                            break;
+                        default:
+                            distanceVX = distances[v] + (*x-*v).length();
+                    }
+                }else
+                    distanceVX = DBL_MAX;
                 if(pit != predecessors.end()){
                     if(distances[x] > distanceVX){
                         distances[x] = distanceVX;
@@ -177,7 +187,7 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
                     frontier.push(x);
                 }
             }
-        } while(v != v2);
+        } while(v21RingNeighbors.size() < v2->VV()->numels());
 
         shortestPath.push_back(v2);
         v = predecessors[v2];

@@ -1,2 +1,5 @@
 
 docs/Generated/
+/build/
+/build-default/
+*.txt.user
