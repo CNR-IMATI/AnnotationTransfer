@@ -76,6 +76,7 @@ class Annotation {
         const short BBOX_SPHERE_RATIO = 1000;   //Divisive coefficient between the BBox longest diagonal and neighborhood sphere radius
         const unsigned short NUM_OF_THREADS = 8;//Number of threads used for the transfer procedure
         const bool ORDER = true;                //Order of the outline: if TRUE then it is counterclockwise, otherwise is clockwise
+        const bool POST_PROCESSING = false;     //Spikes can be removed in postprocessing or avoided by inserting infinite weights in the shortest path computation.
 
 };
 

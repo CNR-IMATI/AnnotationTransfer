@@ -31,7 +31,7 @@ SPThread::SPThread(Vertex* v1, Vertex* v2, vector<Vertex*>* path, const short in
 }
 
 void SPThread::executeTask(){
-    *path = Utilities::dijkstra(v1,v2, metric);
+    *path = Utilities::dijkstra(v1,v2, metric, false);
 }
 
 void SPThread::startThread(){ tid = new thread(MainThread::executeTaskHelper, this); }

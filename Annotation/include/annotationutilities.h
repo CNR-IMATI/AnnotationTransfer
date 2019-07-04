@@ -45,7 +45,7 @@ namespace Utilities {
     void findPoints(std::vector<IMATI_STL::Vertex*> &vertices, std::vector<IMATI_STL::Triangle*> triangles, std::vector<std::vector<IMATI_STL::Vertex*> > outlines);
     void checkOutlineOrder(std::vector<int> innerVerticesIndices, std::vector<IMATI_STL::Vertex *> &outline, ExtendedTrimesh* model);
     bool isPointInsideTriangle(IMATI_STL::Point checkPoint, IMATI_STL::Point trianglePoint1, IMATI_STL::Point trianglePoint2, IMATI_STL::Point trianglePoint3);
-    std::vector<IMATI_STL::Vertex*> dijkstra(IMATI_STL::Vertex* v1, IMATI_STL::Vertex* v2, const short int metric);
+    std::vector<IMATI_STL::Vertex*> dijkstra(IMATI_STL::Vertex* v1, IMATI_STL::Vertex* v2, const short int metric, const bool avoidUsed);
     std::vector<IMATI_STL::Triangle*> regionGrowing(std::vector<std::vector<IMATI_STL::Vertex*> > contours);
     IMATI_STL::Vertex* findCorrespondingVertex(IMATI_STL::Vertex* v, std::vector<IMATI_STL::Triangle*> otherMesh);
     IMATI_STL::Triangle* findCorrespondingTriangle(IMATI_STL::Vertex* v, std::vector<IMATI_STL::Triangle*> otherMesh);

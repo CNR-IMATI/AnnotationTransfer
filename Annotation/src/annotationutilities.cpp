@@ -134,36 +134,52 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
             return false;
     }
 
-    vector<Vertex*> dijkstra(Vertex* v1, Vertex* v2, const short int metric){
+    Vertex* extractNearestVertex(vector<Vertex*> &frontier, map<Vertex*, double> distances){
 
-        queue<Vertex*> frontier;
+        double minDist = DBL_MAX;
+        int minPos = -1;
+        for(unsigned int i = 0; i < frontier.size(); i++){
+            if(distances[frontier[i]] < minDist){
+                minPos = i;
+                minDist = distances[frontier[i]];
+            }
+        }
+
+        Vertex* nearest = frontier[minPos];
+        frontier.erase(frontier.begin() + minPos);
+        return nearest;
+
+    }
+
+    vector<Vertex*> dijkstra(Vertex* v1, Vertex* v2, const short int metric, const bool avoidUsed){
+
+        vector<Vertex*> frontier;
         map<Vertex*, double> distances = {{v1, 0}};
         map<Vertex*, Vertex*> predecessors = {{v1, nullptr}};
         set<Vertex*> v21RingNeighbors;
         vector<Vertex*> shortestPath;
         Vertex* v;
+        bool v2visited = false;
 
         if(((*v1) - (*v2)).length() == 0.0){
             return shortestPath;
         }
 
-        frontier.push(v1);
+        frontier.push_back(v1);
 
         do{
-            v = frontier.front();
+            v = extractNearestVertex(frontier, distances);
 
-            frontier.pop();
             List* neighbors = v->VV();
             for(Node* n = neighbors->head(); n != nullptr; n = n->next()){
                 Vertex* x = static_cast<Vertex*>(n->data);
 
-                if(x == v2 && v21RingNeighbors.find(v) == v21RingNeighbors.end()){
+                if(x == v2 && v21RingNeighbors.find(v) == v21RingNeighbors.end())
                     v21RingNeighbors.insert(v);
-                    cout<<"V21_Ring"<<v21RingNeighbors.size()<<"= ("<<v->x<<","<<v->y<<","<<v->z<<")"<<endl;
-                }
+
                 map<Vertex*, Vertex*>::iterator pit = predecessors.find(x);
                 double distanceVX;
-                if(x->info == nullptr){
+                if(!avoidUsed || x->info == nullptr || !(*static_cast<bool*>(x->info))){
                     switch(metric){
                         case SEGMENT_DISTANCE:
                             distanceVX = distances[v] + x->distanceFromEdge(v1,v2);
@@ -176,6 +192,7 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
                     }
                 }else
                     distanceVX = DBL_MAX;
+
                 if(pit != predecessors.end()){
                     if(distances[x] > distanceVX){
                         distances[x] = distanceVX;
@@ -184,10 +201,13 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
                 } else {
                     distances.insert(std::make_pair(x, distanceVX));
                     predecessors.insert(std::make_pair(x, v));
-                    frontier.push(x);
+                    frontier.push_back(x);
                 }
             }
-        } while(v21RingNeighbors.size() < v2->VV()->numels());
+            if(v == v2)
+                v2visited = true;
+
+        } while(!v2visited);
 
         shortestPath.push_back(v2);
         v = predecessors[v2];
@@ -275,19 +295,21 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
         double bestDistance = DBL_MAX;
         Vertex* r = nullptr;
         Triangle* t = findCorrespondingTriangle(v, neighbors);
-        Vertex* tv1 = t->v1(), *tv2 = t->v2(), *tv3 = t->v3();
-        Point p = Point::linePlaneIntersection(*v, (*v) + v->getNormal(), *tv1, *tv2, *tv3);
-        Vertex* v_ = t->v1();
+        if(t != nullptr){
+            Vertex* tv1 = t->v1(), *tv2 = t->v2(), *tv3 = t->v3();
+            Point p = Point::linePlaneIntersection(*v, (*v) + v->getNormal(), *tv1, *tv2, *tv3);
+            Vertex* v_ = t->v1();
 
-        for(int i = 0; i < 3; i++){
-            double actualDistance = ((p)-(*v_)).length();
-            if(actualDistance < bestDistance){
-                bestDistance = actualDistance;
-                r = v_;
+            for(int i = 0; i < 3; i++){
+                double actualDistance = ((p)-(*v_)).length();
+                if(actualDistance < bestDistance){
+                    bestDistance = actualDistance;
+                    r = v_;
+                }
+                v_ = t->nextVertex(v_);
             }
-            v_ = t->nextVertex(v_);
-        }
 
+        }
         return r;
 
     }
