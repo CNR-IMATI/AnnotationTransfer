@@ -64,9 +64,9 @@ int main(int argc, char *argv[]){
             long int duration;
             auto start = std::chrono::high_resolution_clock::now();
             if(source->V.numels() < target->V.numels() / 5)
-                targetAnnotations.push_back(a->parallelTransfer(target, m));
+                targetAnnotations.push_back(a->parallelTransfer(target));
             else
-                targetAnnotations.push_back(a->transfer(target, m));
+                targetAnnotations.push_back(a->transfer(target));
             /*double oldArea = a->getArea();
             double newArea = targetAnnotations.back()->getArea();
             double oldPerimeter = a->getPerimeter();
@@ -138,7 +138,6 @@ vector<Annotation*> readFacets(string filename, ExtendedTrimesh* source){
                         Vertex* v = source->getPoint(static_cast<unsigned long>(facetOutline[i]));
                         outline.push_back(v);
                     }
-                    outline.push_back(outline[0]);
                     Utilities::checkOutlineOrder(innerVerticesIndices, outline, source);
                     a->addOutline(outline);
                 }

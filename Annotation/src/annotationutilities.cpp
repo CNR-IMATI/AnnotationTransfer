@@ -79,6 +79,7 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
         int IS_POINTED = 20;
         vector<Triangle*> pointedTriangles;
         vector<Vertex*> innerVertices;
+        vector<Vertex*> pointedVertices;
 
         for(vector<int>::iterator vit = innerVerticesIndices.begin(); vit != innerVerticesIndices.end(); vit++)
             innerVertices.push_back(model->getPoint(static_cast<int>(*vit)));
@@ -86,16 +87,18 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
         for(vector<Vertex*>::iterator vit = innerVertices.begin(); vit != innerVertices.end(); vit++)
             (*vit)->info = &IS_POINTER;
 
+        pointedVertices.insert(pointedVertices.end(), innerVertices.begin(), innerVertices.end());
         for(vector<Vertex*>::iterator vit = outline.begin(); vit != outline.end(); vit++)
             (*vit)->info = &IS_POINTER;
+        pointedVertices.insert(pointedVertices.end(), outline.begin(), outline.end());
 
-        for(vector<Vertex*>::iterator vit = innerVertices.begin(); vit != innerVertices.end(); vit++){
+        for(vector<Vertex*>::iterator vit = pointedVertices.begin(); vit != pointedVertices.end(); vit++){
             Vertex* v = static_cast<Vertex*>(*vit);
             for(Node* n = v->VT()->head(); n != nullptr; n = n->next()){
                 Triangle* t = static_cast<Triangle*>(n->data);
-                if( t->v1()->info != nullptr && *static_cast<int*>(t->v1()->info) == IS_POINTER &&
-                    t->v2()->info != nullptr && *static_cast<int*>(t->v2()->info) == IS_POINTER &&
-                    t->v3()->info != nullptr && *static_cast<int*>(t->v3()->info) == IS_POINTER &&
+                if( (t->v1()->info != nullptr && *static_cast<int*>(t->v1()->info) == IS_POINTER) &&
+                    (t->v2()->info != nullptr && *static_cast<int*>(t->v2()->info) == IS_POINTER) &&
+                    (t->v3()->info != nullptr && *static_cast<int*>(t->v3()->info) == IS_POINTER) &&
                     (t->info == nullptr || *static_cast<int*>(t->info) != IS_POINTED)){
                     t->info = &IS_POINTED;
                     pointedTriangles.push_back(t);
@@ -104,6 +107,9 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
         }
 
         Triangle* as = outline[3]->getEdge(outline[4])->leftTriangle(outline[3]);
+        int prova = 0;
+        if(as->info != nullptr)
+            prova = *static_cast<int*>(as->info) ;
         if(as->info == nullptr || *static_cast<int*>(as->info) != IS_POINTED)
             std::reverse(outline.begin(), outline.end());
 
@@ -223,13 +229,14 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
 
         queue<Triangle*> neighbors;
         vector<Triangle*> internalTriangles;
-        unsigned int BOUNDARY_EDGE = 1;
-        unsigned int ALREADY_USED = 9;
+        uint BOUNDARY_EDGE = 1;
+        uint ALREADY_USED = 9;
 
         for(vector<vector<Vertex*> >::iterator oit = contours.begin(); oit != contours.end(); oit++){
             vector<Vertex*> contour = static_cast<vector<Vertex*> >(*oit);
-            neighbors.push(contour[0]->getEdge(contour[1])->leftTriangle(contour[0]));
-            for(unsigned int i = 1; i <= contour.size(); i++){
+            Triangle* t = contour[0]->getEdge(contour[1])->leftTriangle(contour[0]);
+            neighbors.push(t);
+            for(uint i = 1; i <= contour.size(); i++){
 
                 Vertex* v1, * v2;
                 if(i < contour.size()){
@@ -246,14 +253,16 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
             }
         }
 
+
+
         while(neighbors.size() > 0){
             Triangle* t = neighbors.front();
             neighbors.pop();
             Edge* e = t->e1;
             for(int i = 0; i < 3; i++){
-                if(!(e->info != nullptr && *static_cast<unsigned int*>(e->info) == BOUNDARY_EDGE)){
+                if(!(e->info != nullptr && *static_cast<uint*>(e->info) == BOUNDARY_EDGE)){
                     Triangle* t_ = e->oppositeTriangle(t);
-                    if(t_->info == nullptr ||  *static_cast<unsigned int*>(t_->info) != ALREADY_USED){
+                    if(t_ != nullptr && (t_->info == nullptr ||  *static_cast<uint*>(t_->info) != ALREADY_USED)){
                         internalTriangles.push_back(t_);
                         t_->info = static_cast<void*>(&ALREADY_USED);
                         neighbors.push(t_);
@@ -265,7 +274,7 @@ void findFaces(vector<Triangle*> &faces, vector<Vertex*> vertices){
 
         for(vector<vector<Vertex*> >::iterator oit = contours.begin(); oit != contours.end(); oit++){
             vector<Vertex*> contour = static_cast<vector<Vertex*> >(*oit);
-            for(unsigned int i = 1; i <= contour.size(); i++){
+            for(uint i = 1; i <= contour.size(); i++){
 
                 Vertex* v1, *v2;
                 if(i < contour.size()){
